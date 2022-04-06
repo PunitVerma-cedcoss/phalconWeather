@@ -1,0 +1,148 @@
+<?php
+$this->assets->outputCss();
+?>
+<div class="flex flex-col justify-center items-center">
+    <div class="card bg-neutral-900 capitalize rounded-lg border shadow-lg m-5 text-gray-300 p-3">
+        <div class="flex">
+            <div class="flex justify-center bg-neutral-800 items-center border p-3 rounded-lg shadow-md">
+                <p class="text-9xl font-black"><?php echo $data["current"]["temp_c"] ?></p>
+                <p class="text-6xl font-medium">c</p>
+            </div>
+            <div class="grow p-2 border-r">
+                <p>City : <span class="text-2xl text-pink-500"><?php echo $data["location"]["name"] ?></span></p>
+                <p>Region : <?php echo $data["location"]["region"] ?></p>
+                <p>Country : <?php echo $data["location"]["country"] ?></p>
+                <p>Latitude : <?php echo $data["location"]["lat"] ?></p>
+                <p>Longitude : <?php echo $data["location"]["lon"] ?></p>
+                <p>Zone : <span class="text-pink-500 italic underline"><?php echo $data["location"]["tz_id"] ?></span></p>
+                <p>localtime : <span class="text-pink-500 italic underline"><?php echo $data["location"]["localtime"] ?></span></p>
+            </div>
+            <div class="grow p-2">
+                <p>last_updated : <span class="text-2xl text-indigo-500"><?php echo $data["current"]["last_updated"] ?></span></p>
+                <p>temperature celcius : <?php echo $data["current"]["temp_c"] ?></p>
+                <p>emperature ferenhite : <?php echo $data["current"]["temp_f"] ?></p>
+                <p><?php echo $data["current"]["is_day"] ? "day" : "night" ?> : <?php echo $data["current"]["temp_f"] ?></p>
+            </div>
+        </div>
+        <!-- <div class="py-2">
+            <hr>
+        </div> -->
+        <div class="max-w-fit p-3 flex justify-center items-center">
+            <div>
+                <p>wind mph : <?php echo $data["current"]["wind_mph"] ?></p>
+                <p>wind kph : <?php echo $data["current"]["wind_kph"] ?></p>
+                <p>wind degree : <?php echo $data["current"]["wind_degree"] ?></p>
+                <p>wind direction : <span class="text-pink-500"><?php echo $data["current"]["wind_dir"] ?></span></p>
+                <p>pressure : <?php echo $data["current"]["pressure_mb"] ?></p>
+                <p>humidity : <?php echo $data["current"]["humidity"] ?></p>
+            </div>
+            <div class="px-2">
+                <p>cloud : <?php echo $data["current"]["cloud"] ?></p>
+                <p>feelslike : <?php echo $data["current"]["feelslike_c"] ?></p>
+                <p>vis : <?php echo $data["current"]["vis_km"] ?></p>
+                <p>uv : <span class="text-pink-500"><?php echo $data["current"]["uv"] ?></span></p>
+                <p>gust_mph : <?php echo $data["current"]["gust_mph"] ?></p>
+                <p>gust_kph : <?php echo $data["current"]["gust_kph"] ?></p>
+            </div>
+            <div class="px-2">
+                <p class="font-medium text-pink-500 underline">air quality</p>
+                <?php
+                foreach ($data["current"]["air_quality"] as $aqkey => $aqValue) {
+                    if ($aqkey != 'us-epa-index' && $aqkey != 'gb-defra-index') {
+                ?>
+                        <p><?php echo $aqkey ?> : <?php echo $aqValue ?></p>
+                <?php
+                    }
+                }
+
+                ?>
+            </div>
+            <div>
+                <p class="underline text-pink-500">Forecast</p>
+                <?php
+                $forecastDay = $forecastData["forecast"]["forecastday"][0];
+                ?>
+                <div class="pl-2">
+                    <?php
+                    foreach ($forecastDay["astro"] as $astrokey => $astroValue) {
+                    ?>
+                        <p><?php echo $astrokey ?> : <?php echo $astroValue ?></p>
+                    <?php
+                    }
+                    ?>
+                </div>
+            </div>
+            <a href="/index/error">
+                <button class="p-3 text-white rounded-lg bg-pink-500"><i class="fa fa-futbol"></i> Sports</button>
+            </a>
+        </div>
+        <p>forecast</p>
+        <hr>
+        <div class="max-w-fit p-3 flex justify-around items-center">
+            <div>
+                <?php
+                $forecastDay = $forecastData["forecast"]["forecastday"][0];
+                ?>
+                <p>Date : <?php echo $forecastDay["date"] ?></p>
+                <p>maxtemp c : <?php echo $forecastDay["day"]["maxtemp_c"] ?></p>
+                <p>mintemp c : <?php echo $forecastDay["day"]["mintemp_c"] ?></p>
+                <p>daily will it rain : <?php echo $forecastDay["day"]["daily_will_it_rain"] ?></p>
+            </div>
+            <a href="#fullfore">
+                <button class="m-3 p-3 text-white rounded-lg bg-pink-500">Full Day Forecast</button>
+            </a>
+            <a href="#alerts">
+                <button class="m-3 p-3 text-white rounded-lg bg-indigo-500">See Alerts</button>
+            </a>
+        </div>
+    </div>
+    <div class="flex w-full justify-left p-5 border-b" id="fullfore">
+        <p class="text-lg text-gray-200">Full day forecast</p>
+    </div>
+    <div class="text-gray-300 grid grid-cols-12 p-3 m-5">
+        <?php
+        foreach ($forecastDay["hour"] as $hour) {
+        ?>
+            <div class="rounded-lg col-span-2 bg-neutral-900 shadow-lg border m-1 p-2 hover:bg-neutral-900 hover:border-pink-500">
+                <p>time : <span class="text-orange-500"><?php echo explode(" ", $hour["time"])[1] ?></span></p>
+                <p>temperature : <?php echo $hour["temp_c"] ?></p>
+                <p>wind : <?php echo $hour["wind_kph"] ?></p>
+            </div>
+        <?php
+        }
+        ?>
+    </div>
+
+    <div class="flex w-full justify-left p-5 border-b" id="alerts">
+        <p class="text-lg text-gray-200">Weather alerts</p>
+    </div>
+    <div class="max-w-fit capitalize text-gray-200 p-3 flex flex-col">
+        <?php
+        if (count($forecastData["alerts"]["alert"])) {
+            foreach ($forecastData["alerts"] as $alert) {
+                foreach ($alert as $alerts) {
+        ?>
+                    <div class="border rounded-lg shadow-lg m-2 p-2 divide-y divide-gray-600">
+                        <?php
+                        foreach ($alerts as $alertKey => $alertValue) {
+                        ?>
+                            <p class=""><span class="font-medium text-gray-400"><?php echo $alertKey ?></span> : <?php echo $alertValue ?></p>
+                        <?php
+                        }
+                        ?>
+                    </div>
+            <?php
+                }
+            }
+            ?>
+
+        <?php
+        } else {
+        ?>
+            <p>no alerts</p>
+        <?php
+        }
+        ?>
+    </div>
+
+</div>

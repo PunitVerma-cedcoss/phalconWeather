@@ -1,9 +1,41 @@
 <?php
+$this->assets->outputCss();
+?>
+<div class="h-screen w-screen flex flex-col justify-center items-center">
+    <form action="/index/" method="post" class="p-5 flex justify-center items-center w-full ">
+        <div>
+            <input type="text" name="location" id="" class="border rounded bg-transparent bg-neutral-700 text-gray-300" placeholder="search your location.." required>
+            <button type="submit" class=" bg-pink-500 p-2 rounded text-white"><i class="fa fa-location-arrow"></i> Search</button>
+        </div>
+    </form>
+    <?php
+    if (isset($data)) {
+    ?>
+        <div class="w-full overflow-auto mt-5 grid grid-cols-12 p-5">
 
-echo "<h1>Hello World</h1>";
-echo PHP_EOL;
-
-echo $this->tag->linkTo(
-    'signup',
-    'Sign Up Here!'
-);
+            <?php
+            foreach ($data as $location) {
+            ?>
+                <div class="col-span-12 text-gray-300 flex justify-between items-center capitalize card p-3 bg-neutral-700 rounded-lg border-2 border-neutral-500 shadow-md m-2">
+                    <div>
+                        <p><i class="text-neutral-300 fa fa-location-arrow"></i> City : <span class="text-pink-500"><?php echo $location["name"] ?></span></p>
+                        <p><i class="text-neutral-300 fa fa-globe"></i> Region : <?php echo $location["region"] ?></p>
+                        <p><i class="text-neutral-300 fa fa-flag"></i> Country : <?php echo $location["country"] ?></p>
+                        <p><i class="text-neutral-300 fa fa-arrows-alt"></i> Latitude : <?php echo $location["lat"] ?></p>
+                        <p><i class="text-neutral-300 fa fa-arrows-alt"></i> Longitude : <?php echo $location["lon"] ?></p>
+                        <p><i class="text-neutral-300 fa fa-link"></i> Url : <span class="text-pink-500 italic underline"><?php echo $location["url"] ?></span></p>
+                    </div>
+                    <div>
+                        <a href="/index/city/<?php echo $location["url"] ?>">
+                            <button class="p-2 rounded-lg shadow-md bg-pink-500 text-white"><i class="fa fa-eye"></i> View Details</button>
+                        </a>
+                    </div>
+                </div>
+            <?php
+            }
+            ?>
+        </div>
+    <?php
+    }
+    ?>
+</div>

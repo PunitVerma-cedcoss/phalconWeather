@@ -58,6 +58,14 @@ $container->set(
     }
 );
 
+// api key
+$container->set(
+    'key',
+    function () {
+        return "0bab7dd1bacc418689b143833220304";
+    }
+);
+
 //cache container
 $container->setShared(
     'cache',

@@ -4,6 +4,8 @@ namespace App\Components;
 
 use Phalcon\Di\Injectable;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * helper class for hitting the api and getting response
@@ -16,14 +18,15 @@ class SearchComponent extends Injectable
      * @param [string] $q
      * @return ARRAY
      */
-    public function search($q)
+    public function searchLocation($q)
     {
         if ($this->cache->has(implode("", explode(" ", $q)))) {
             return $this->cache->get(implode("", explode(" ", $q)));
         }
         $client = new Client();
         $qq = implode('+', explode(' ', $q));
-        $url = "https://openlibrary.org/search.json?q={$qq}&mode=ebooks&has_fulltext=true";
+        $key = $this->key;
+        $url = "http://api.weatherapi.com/v1/search.json?key=" . $key . "&q=" . $q;
         $response = $client->get(
             $url,
         );
@@ -33,25 +36,77 @@ class SearchComponent extends Injectable
         return $response;
     }
     /**
-     * return an image path
+     * return locations data
      *
      * @param [string] $lending_edition_s
      * @param [string] $size
      * @return string
      */
-    public function getImage($lending_edition_s, $size)
-    {
-        $image = "https://covers.openlibrary.org/b/olid/{$lending_edition_s}-{$size}.jpg";
-        return $image;
-    }
-    public function getBookById($q)
+    public function getDetailsByCity($city)
     {
         $client = new Client();
-        $url = "https://openlibrary.org/api/books?bibkeys=ISBN:{$q}&jscmd=details&format=json";
-        $response = $client->get(
-            $url,
-        );
-        $response = json_decode($response->getBody()->getContents(), true);
-        return $response;
+        $key = $this->key;
+        $url = "http://api.weatherapi.com/v1/current.json?key=" . $key . "&q=" . $city . "&aqi=yes";
+        $response;
+        try {
+            $response = $client->request(
+                "GET",
+                $url,
+            );
+            $response = json_decode($response->getBody()->getContents(), true);
+            return $response;
+        } catch (ClientException $e) {
+            // $s = explode("message", $e->getMessage())[1];
+            // print_r(substr($s, 3, strlen($s) - 8));
+            header("location:/index/error");
+        }
+    }
+    /**
+     * return forecast
+     *
+     * @param [string] $lending_edition_s
+     * @param [string] $size
+     * @return string
+     */
+    public function getForecastByCity($city)
+    {
+        $client = new Client();
+        $key = $this->key;
+        $url = "http://api.weatherapi.com/v1/forecast.json?key=" . $key . "&q=" . $city . "&days=1&aqi=no&alerts=yes";
+        $response = '';
+        try {
+            $response = $client->request(
+                "GET",
+                $url,
+            );
+            $response = json_decode($response->getBody()->getContents(), true);
+            return $response;
+        } catch (ClientException $e) {
+            header("location:/index/error");
+        }
+    }
+    /**
+     * return hostory
+     *
+     * @param [string] $lending_edition_s
+     * @param [string] $size
+     * @return string
+     */
+    public function getHistory($city)
+    {
+        $client = new Client();
+        $key = $this->key;
+        $url = "http://api.weatherapi.com/v1/history.json?key=" . $key . "&q=" . $city . "dt=2010-01-01";
+        $response = '';
+        try {
+            $response = $client->request(
+                "GET",
+                $url,
+            );
+            $response = json_decode($response->getBody()->getContents(), true);
+            return $response;
+        } catch (ClientException $e) {
+            header("location:/index/error");
+        }
     }
 }

@@ -7,8 +7,28 @@ class IndexController extends Controller
 {
     public function indexAction()
     {
-        
-        
-        // return '<h1>Hello World!</h1>';
+        $this->assets->addCss("css/styles.css");
+        //    if got post
+        if ($this->request->isPost()) {
+            $ob = new \App\Components\SearchComponent();
+            $data = $ob->searchLocation($this->request->getPost()["location"]);
+            $this->view->data = $data;
+        }
+    }
+    public function cityAction()
+    {
+        $this->assets->addCss("css/styles.css");
+        $getCity = explode("/", $this->request->getQuery()["_url"])[3];
+        if (!isset($getCity) | strlen($getCity) == 0) {
+            header("location:/index");
+        }
+        $ob = new \App\Components\SearchComponent();
+        $data = $ob->getDetailsByCity($getCity);
+        $forecastData = $ob->getForecastByCity($getCity);
+        $this->view->data = $data;
+        $this->view->forecastData = $forecastData;
+    }
+    public function errorAction()
+    {
     }
 }
