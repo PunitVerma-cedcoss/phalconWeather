@@ -27,6 +27,15 @@ class IndexController extends Controller
         $forecastData = $ob->getForecastByCity($getCity);
         $this->view->data = $data;
         $this->view->forecastData = $forecastData;
+        $this->view->currentCity = $getCity;
+
+        //if got post
+        if ($this->request->isPost()) {
+            $date = $this->request->getPost()['date'];
+            $historyData = $ob->getHistory($getCity, $date);
+            $this->view->forecastData = $historyData;
+            $this->view->date = $date;
+        }
     }
     public function errorAction()
     {

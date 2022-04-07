@@ -86,17 +86,19 @@ class SearchComponent extends Injectable
         }
     }
     /**
-     * return hostory
+     * return history
      *
      * @param [string] $lending_edition_s
      * @param [string] $size
      * @return string
      */
-    public function getHistory($city)
+    public function getHistory($city, $date)
     {
+        // $tommarrow = date("Y-m-d", strtotime("-1 day"));
         $client = new Client();
         $key = $this->key;
-        $url = "http://api.weatherapi.com/v1/history.json?key=" . $key . "&q=" . $city . "dt=2010-01-01";
+        //http://api.weatherapi.com/v1/history.json?key=0bab7dd1bacc418689b143833220304&q=lucknow&dt=2022-04-06
+        $url = "http://api.weatherapi.com/v1/history.json?key=" . $key . "&q=" . $city . "&dt=" . $date;
         $response = '';
         try {
             $response = $client->request(
@@ -106,7 +108,7 @@ class SearchComponent extends Injectable
             $response = json_decode($response->getBody()->getContents(), true);
             return $response;
         } catch (ClientException $e) {
-            header("location:/index/error");
+            // header("location:/index/error");
         }
     }
 }

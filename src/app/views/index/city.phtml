@@ -86,7 +86,13 @@ $this->assets->outputCss();
                 <p>Date : <?php echo $forecastDay["date"] ?></p>
                 <p>maxtemp c : <?php echo $forecastDay["day"]["maxtemp_c"] ?></p>
                 <p>mintemp c : <?php echo $forecastDay["day"]["mintemp_c"] ?></p>
-                <p>daily will it rain : <?php echo $forecastDay["day"]["daily_will_it_rain"] ?></p>
+                <?php
+                if (isset($forecastDay["day"]["daily_will_it_rain"])) {
+                ?>
+                    <p>daily will it rain : <?php echo $forecastDay["day"]["daily_will_it_rain"] ?></p>
+                <?php
+                }
+                ?>
             </div>
             <a href="#fullfore">
                 <button class="m-3 p-3 text-white rounded-lg bg-pink-500">Full Day Forecast</button>
@@ -94,10 +100,24 @@ $this->assets->outputCss();
             <a href="#alerts">
                 <button class="m-3 p-3 text-white rounded-lg bg-indigo-500">See Alerts</button>
             </a>
+            <a href="#history">
+                <button class="m-3 p-3 text-white rounded-lg bg-indigo-700">See History</button>
+            </a>
         </div>
     </div>
-    <div class="flex w-full justify-left p-5 border-b" id="fullfore">
+    <div class="flex w-full justify-left items-center p-5 border-b" id="fullfore">
         <p class="text-lg text-gray-200">Full day forecast</p>
+        <form id="history" action="/index/city/<?php echo $currentCity; ?>" method="post" class="ml-2">
+            <input type="date" value="<?php echo $date; ?>" name="date" class="bg-pink-500 border-0 rounded-lg text-white " required>
+            <input type="submit" name="history" value="see history" class="bg-pink-500 rounded-lg text-white p-2">
+        </form>
+        <?php
+        if (isset($date)) {
+        ?>
+            <p class="mx-2 text-white font-medium">showing for <?php echo $date ?></p>
+        <?php
+        }
+        ?>
     </div>
     <div class="text-gray-300 grid grid-cols-12 p-3 m-5">
         <?php

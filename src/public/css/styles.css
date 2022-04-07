@@ -20,7 +20,7 @@
   background: rgba(204, 11, 140, 0.685);
 }
 
-body {
+.cbg {
   background-image: url("../assets/layered-waves-haikei\ \(1\).svg");
   background-size: cover;
   background-position: center;
